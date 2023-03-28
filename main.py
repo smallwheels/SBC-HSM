@@ -1,14 +1,68 @@
 import Encryption
 import Decryption
 import KeyGen
+import Hashing
 
 
-def hashing():
-    print("hashing test")
+# HASHING MENU:
+# A menu is used to select the desired hashing algorith (e.g. MD5) being used
+def hashing_menu():
+    # user check to ensure there is input data in the relevant file
+    # Loops until user inputs "y"
+    x = 1
+    print("please enter [y] when message is in /home/raspberry/Desktop/***/RAW-File")
+    while x == 1:
+        check = input(">>> ")
+        if check == "y":
+            x = 0
+        else:
+            print("please enter valid input")
 
+    # menu options array of hashing algorithms for user to select
+    hashing_options = {
+        1: 'SHA-256',
+        2: 'RIPMD-150',
+        3: 'HMAC SHA-512',
+        4: 'Exit',
+    }
 
-def hmac_gen():
-    print("hmac test")
+    # a for loop prints the options array with correlating number
+    print(">----  HASHING  ----<")
+    for i in hashing_options.keys():
+        print('[', i, ']', hashing_options[i])
+
+    # user input will loop until a correct input is give (e.g. 3
+    # try except statement for data validation
+    while True:
+        hash_option = ''
+        try:
+            hash_option = int(input('Please Select a Hashing Algorithm: '))
+        except:
+            print('Wrong input. Please enter a number ...')
+
+        # when an option is selected the program will grab the RAW data to be hashed for the relevant algorithm
+        # the Hashing import and algorithm function is then called with a RAW data passed through
+        if hash_option == 1:
+            f = open('/home/raspberry/Desktop/Hashing/RAW-File', 'r')
+            raw = f.read()
+            print(Hashing.sha256_hashing(bytes(raw, 'utf-8')))
+            return
+        elif hash_option == 2:
+            f = open('/home/raspberry/Desktop/Hashing/RAW-File', 'r')
+            raw = f.read()
+            print(Hashing.ripemd160_hashing(bytes(raw,'utf-8')))
+            return
+        elif hash_option == 3:
+            f = open('/home/raspberry/Desktop/Hashing/RAW-File', 'r')
+            raw = f.read()
+            print(Hashing.hmac_gen(bytes(raw, 'utf-8')))
+            return
+        elif hash_option == 4:
+            print('### Returning To Menu ###')
+            return
+        else:
+            print('Invalid option. Please enter a number between 1 and 4.')
+
 
 # KEY GENERATION MENU:
 # A menu is used to select the desired key for which encryption algorith is being used
@@ -51,6 +105,7 @@ def key_menu():
             return
         else:
             print('Invalid option. Please enter a number between 1 and 4.')
+
 
 # ENCRYPTION MENU:
 # A menu is used to select the desired algorith (e.g. AES256) being used
@@ -174,17 +229,17 @@ def decryption_menu():
         else:
             print('Invalid option. Please enter a number between 1 and 4.')
 
+
 # MAIN MENU
 # this menu selection is broken down into the  functionality a user interacting with the HSM would require
 # menu function creates an array of menu selections and displays them
 def main_menu():
     menu_options = {
-        1: 'Hashing',
-        2: 'Generate HMAC',
-        3: 'Generate Key',
-        4: 'Encrypt',
-        5: 'Decrypt',
-        6: 'Exit',
+        1: 'Hashing / HMAC',
+        2: 'Generate Key',
+        3: 'Encrypt',
+        4: 'Decrypt',
+        5: 'Exit',
     }
 
     print(">----  MENU  ----<")
@@ -205,16 +260,14 @@ if __name__ == "__main__":
             print('Wrong input. Please enter a number ...')
 
         if option == 1:
-            hashing()
+            hashing_menu()
         elif option == 2:
-            hmac_gen()
-        elif option == 3:
             key_menu()
-        elif option == 4:
+        elif option == 3:
             encryption_menu()
-        elif option == 5:
+        elif option == 4:
             decryption_menu()
-        elif option == 6:
+        elif option == 5:
             print('### Exiting HSM ###')
             exit()
         else:
